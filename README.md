@@ -59,21 +59,23 @@ dl-project/
 
 ## 📊 Dataset
 
-| Attribute | Value |
-|---|---|
-| **Source** | [FracAtlas](https://www.kaggle.com/datasets/mahmudulhasantasin/fracatlas-original-dataset) |
-| **Total images** | 4,083 |
-| **Fractured** | 717 (17.6%) |
-| **Non-Fractured** | 3,366 (82.4%) |
-| **Imbalance ratio** | ~4.7 : 1 |
-| **Body parts** | Leg (2,273), Hand (1,538), Shoulder (349), Hip (338) |
-| **View angles** | Frontal (2,503), Lateral (1,492), Oblique (418) |
-| **Image sizes** | Variable (373–2,304 px) → normalised to 224 × 224 |
+| Attribute           | Value                                                                                      |
+| ------------------- | ------------------------------------------------------------------------------------------ |
+| **Source**          | [FracAtlas](https://www.kaggle.com/datasets/mahmudulhasantasin/fracatlas-original-dataset) |
+| **Total images**    | 4,083                                                                                      |
+| **Fractured**       | 717 (17.6%)                                                                                |
+| **Non-Fractured**   | 3,366 (82.4%)                                                                              |
+| **Imbalance ratio** | ~4.7 : 1                                                                                   |
+| **Body parts**      | Leg (2,273), Hand (1,538), Shoulder (349), Hip (338)                                       |
+| **View angles**     | Frontal (2,503), Lateral (1,492), Oblique (418)                                            |
+| **Image sizes**     | Variable (373–2,304 px) → normalised to 224 × 224                                          |
 
 **Key challenge**: 4.7× class imbalance → addressed with inverse-frequency class-weighted loss.
 
 ### Pre-processing & Data Augmentation
+
 To prevent overfitting and handle corrupted X-ray files, the dataset undergoes strict pre-processing in `src/dataset.py`:
+
 - **Safety**: `ImageFile.LOAD_TRUNCATED_IMAGES = True` protects against corrupted image bytes crashing the training loop.
 - **Training Augmentation**: Images are dynamically scaled to 256x256, randomly center-cropped to 224x224, horizontally flipped, rotated (±15°), and color jittered (±30% brightness/contrast).
 - **Validation/Test Standardization**: Strict deterministic resize to 224x224 with no random variations.
@@ -84,44 +86,47 @@ To prevent overfitting and handle corrupted X-ray files, the dataset undergoes s
 ## 🤖 Iterative Model Development
 
 ### Iteration 1 — `ModelBaseline` (Simple CNN from scratch)
-| | |
-|---|---|
-| **Architecture** | 4-block CNN: Conv(32)→Conv(64)→Conv(128)→Conv(256)→FC(512)→FC(2) |
-| **Parameters** | ~2.5M trainable |
-| **Augmentation** | None |
-| **Class weights** | ❌ |
+
+|                   |                                                                               |
+| ----------------- | ----------------------------------------------------------------------------- |
+| **Architecture**  | 4-block CNN: Conv(32)→Conv(64)→Conv(128)→Conv(256)→FC(512)→FC(2)              |
+| **Parameters**    | ~2.5M trainable                                                               |
+| **Augmentation**  | None                                                                          |
+| **Class weights** | ❌                                                                            |
 | **Problem found** | Overfitting (train acc >> val acc); low Fractured recall due to majority bias |
-| **Evidence** | Learning curve diverges after epoch 8; CM shows many FN |
+| **Evidence**      | Learning curve diverges after epoch 8; CM shows many FN                       |
 
 ### Iteration 2 — `ModelImproved` (ResNet-18 fine-tuned)
-| | |
-|---|---|
-| **Architecture** | ResNet-18 (ImageNet pretrained, 6 layers frozen) |
-| **Parameters** | 11.2M total, 10.6M trainable |
-| **Augmentation** | Random flip, ±15° rotation, color jitter |
-| **Class weights** | ✅ Inverse-frequency weighting |
-| **LR** | 3×10⁻⁴ (AdamW) |
-| **Improvement** | Higher recall on Fractured class; smoother learning curves |
+
+|                   |                                                            |
+| ----------------- | ---------------------------------------------------------- |
+| **Architecture**  | ResNet-18 (ImageNet pretrained, 6 layers frozen)           |
+| **Parameters**    | 11.2M total, 10.6M trainable                               |
+| **Augmentation**  | Random flip, ±15° rotation, color jitter                   |
+| **Class weights** | ✅ Inverse-frequency weighting                             |
+| **LR**            | 3×10⁻⁴ (AdamW)                                             |
+| **Improvement**   | Higher recall on Fractured class; smoother learning curves |
 
 ### Iteration 3 — `ModelFinal` (EfficientNet-B0 fine-tuned)
-| | |
-|---|---|
-| **Architecture** | EfficientNet-B0 (ImageNet pretrained, full fine-tune) + custom head |
-| **Parameters** | 5.3M (all trainable) |
-| **Augmentation** | Same as Iteration 2 |
-| **Class weights** | ✅ |
-| **LR** | 1×10⁻⁴ with CosineAnnealingLR |
-| **Improvement** | Best F1 + AUC; compound scaling → superior accuracy per parameter |
+
+|                   |                                                                     |
+| ----------------- | ------------------------------------------------------------------- |
+| **Architecture**  | EfficientNet-B0 (ImageNet pretrained, full fine-tune) + custom head |
+| **Parameters**    | 5.3M (all trainable)                                                |
+| **Augmentation**  | Same as Iteration 2                                                 |
+| **Class weights** | ✅                                                                  |
+| **LR**            | 1×10⁻⁴ with CosineAnnealingLR                                       |
+| **Improvement**   | Best F1 + AUC; compound scaling → superior accuracy per parameter   |
 
 ---
 
 ## 📈 Results Summary
 
-| Model | Accuracy | Precision | Recall | **F1** | AUC |
-|---|---|---|---|---|---|
-| ModelBaseline (Simple CNN) | — | — | — | — | — |
-| ModelImproved (ResNet-18)  | — | — | — | — | — |
-| **ModelFinal (EfficientNet-B0)** | **—** | **—** | **—** | **—** | **—** |
+| Model                            | Accuracy | Precision | Recall | **F1** | AUC   |
+| -------------------------------- | -------- | --------- | ------ | ------ | ----- |
+| ModelBaseline (Simple CNN)       | —        | —         | —      | —      | —     |
+| ModelImproved (ResNet-18)        | —        | —         | —      | —      | —     |
+| **ModelFinal (EfficientNet-B0)** | **—**    | **—**     | **—**  | **—**  | **—** |
 
 > Run `trainer.py` to populate the table with actual values.
 
@@ -141,6 +146,7 @@ pip install tensorboard
 ### 2. Explore the dataset
 
 Open and run `notebooks/01_eda.ipynb` using Jupyter or your IDE.
+
 # Outputs charts to results/
 
 ### 3. Train all models
@@ -168,6 +174,23 @@ cd app && python app.py
 
 ---
 
+## ☁️ Cloud Deployment (Streamlit)
+
+This project includes a secondary web app (`app/streamlit_app.py`) natively optimized for free cloud deployment on Streamlit Community Cloud.
+
+1. Push your repository to GitHub.
+2. Sign in to [Streamlit Community Cloud](https://share.streamlit.io/).
+3. Click **New app**.
+4. Select your repository and set the **Main file path** to `app/streamlit_app.py`.
+5. Click **Deploy!** 
+
+To test the Streamlit interface locally before deploying:
+```bash
+streamlit run app/streamlit_app.py
+```
+
+---
+
 ## 🐳 Docker (Bonus)
 
 ```bash
@@ -181,19 +204,19 @@ docker run -p 7860:7860 fracture-detector
 
 After `trainer.py` completes, `results/` contains:
 
-| File | Description |
-|---|---|
-| `eda_class_distribution.png` | Class balance bar + pie charts |
-| `eda_body_parts.png` | X-ray count per body part |
-| `eda_sample_images.png` | Sample X-rays from each class |
-| `ModelBaseline_curves.png` | Learning curves (loss, acc, F1/AUC) |
-| `ModelImproved_curves.png` | Learning curves |
-| `ModelFinal_curves.png` | Learning curves |
-| `ModelBaseline_confusion.png` | Confusion matrix on test set |
-| `ModelImproved_confusion.png` | Confusion matrix |
-| `ModelFinal_confusion.png` | Confusion matrix |
-| `roc_curves.png` | ROC curves for all 3 models |
-| `model_comparison.png` | Side-by-side metric bar chart |
+| File                          | Description                         |
+| ----------------------------- | ----------------------------------- |
+| `eda_class_distribution.png`  | Class balance bar + pie charts      |
+| `eda_body_parts.png`          | X-ray count per body part           |
+| `eda_sample_images.png`       | Sample X-rays from each class       |
+| `ModelBaseline_curves.png`    | Learning curves (loss, acc, F1/AUC) |
+| `ModelImproved_curves.png`    | Learning curves                     |
+| `ModelFinal_curves.png`       | Learning curves                     |
+| `ModelBaseline_confusion.png` | Confusion matrix on test set        |
+| `ModelImproved_confusion.png` | Confusion matrix                    |
+| `ModelFinal_confusion.png`    | Confusion matrix                    |
+| `roc_curves.png`              | ROC curves for all 3 models         |
+| `model_comparison.png`        | Side-by-side metric bar chart       |
 
 ---
 
