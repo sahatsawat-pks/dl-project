@@ -200,7 +200,7 @@ streamlit run app/streamlit_app.py
 
 ---
 
-## 🐳 Docker (Bonus)
+## 🐳 Docker
 
 ```bash
 docker build -t fracture-detector .
