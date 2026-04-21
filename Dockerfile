@@ -14,6 +14,8 @@ RUN pip install --no-cache-dir -r /tmp/requirements.txt
 
 # ─── Stage 2: Copy project ────────────────────────────────────────────────────
 # Source code
+COPY model.py /app/model.py
+COPY dl_utils.py /app/dl_utils.py
 COPY src/   /app/src/
 COPY app/   /app/app/
 COPY models/ /app/models/

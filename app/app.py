@@ -61,7 +61,7 @@ def _gradcam_overlay(model, tensor, img_orig, arch):
     try:
         # Pick target layer by architecture
         if "ResNet" in arch:
-            target = model.features[-1][-1]
+            target = model.features[-2][-1]
         elif "Efficient" in arch:
             target = model.model.features[-1][0]
         else:

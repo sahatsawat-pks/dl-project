@@ -61,7 +61,7 @@ dl-project/
 
 | Attribute | Value |
 |---|---|
-| **Source** | Public X-ray dataset (aggregated medical imaging) |
+| **Source** | [FracAtlas](https://www.kaggle.com/datasets/mahmudulhasantasin/fracatlas-original-dataset) |
 | **Total images** | 4,083 |
 | **Fractured** | 717 (17.6%) |
 | **Non-Fractured** | 3,366 (82.4%) |
@@ -71,6 +71,13 @@ dl-project/
 | **Image sizes** | Variable (373–2,304 px) → normalised to 224 × 224 |
 
 **Key challenge**: 4.7× class imbalance → addressed with inverse-frequency class-weighted loss.
+
+### Pre-processing & Data Augmentation
+To prevent overfitting and handle corrupted X-ray files, the dataset undergoes strict pre-processing in `src/dataset.py`:
+- **Safety**: `ImageFile.LOAD_TRUNCATED_IMAGES = True` protects against corrupted image bytes crashing the training loop.
+- **Training Augmentation**: Images are dynamically scaled to 256x256, randomly center-cropped to 224x224, horizontally flipped, rotated (±15°), and color jittered (±30% brightness/contrast).
+- **Validation/Test Standardization**: Strict deterministic resize to 224x224 with no random variations.
+- **Normalization**: All sets are normalized using standard ImageNet mean (`[0.485, 0.456, 0.406]`) and standard deviation (`[0.229, 0.224, 0.225]`).
 
 ---
 
