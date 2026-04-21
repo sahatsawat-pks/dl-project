@@ -230,3 +230,6 @@ After `trainer.py` completes, `results/` contains:
 ---
 
 ## 👥 Contributors
+1. (6688093) Ongsa Raksalam
+2. (6688152) Thanadon Yindeesuk
+3. (6688249) Sahatsawat Nitjaphant
