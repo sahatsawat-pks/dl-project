@@ -167,18 +167,8 @@ with gr.Blocks(css=CSS, title="🦴 Bone Fracture Detector") as demo:
         🦴 Bone Fracture Detector
       </h1>
       <p style="color:#94A3B8;font-size:1.05em;margin:6px 0 12px 0">
-        AI-powered X-ray analysis · ITCS352 Deep Learning Project
+        X-ray fracture classification and detection analysis
       </p>
-      <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
-        <span style="background:#7C3AED33;border:1px solid #7C3AED;padding:3px 14px;
-                     border-radius:20px;color:#C084FC;font-size:.82em">PyTorch 2.8</span>
-        <span style="background:#0EA5E933;border:1px solid #0EA5E9;padding:3px 14px;
-                     border-radius:20px;color:#38BDF8;font-size:.82em">EfficientNet-B0</span>
-        <span style="background:#10B98133;border:1px solid #10B981;padding:3px 14px;
-                     border-radius:20px;color:#34D399;font-size:.82em">4,083 X-Rays</span>
-        <span style="background:#F5973333;border:1px solid #F59733;padding:3px 14px;
-                     border-radius:20px;color:#FBBF24;font-size:.82em">Grad-CAM</span>
-      </div>
     </div>
     """)
 
@@ -212,8 +202,7 @@ with gr.Blocks(css=CSS, title="🦴 Bone Fracture Detector") as demo:
     gr.HTML("""
     <div style="text-align:center;padding:12px;color:#64748B;font-size:.82em;
                 border-top:1px solid #1E293B;margin-top:20px">
-      ITCS352 Machine Learning · Bone Fracture Detection ·
-      Dataset: 4,083 X-Rays · 717 Fractured / 3,366 Non-Fractured
+      Bone Fracture Detection · Dataset: 4,083 X-Rays · 717 Fractured / 3,366 Non-Fractured
     </div>
     """)
 

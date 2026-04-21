@@ -1,4 +1,4 @@
-# 🦴 Bone Fracture Detection — ITCS352 Deep Learning Project
+# 🦴 Bone Fracture Detection
 
 > **Binary classification of bone fractures from X-ray images using iterative deep learning.**
 
@@ -39,10 +39,10 @@ dl-project/
 │   └── train.py                # (lower-level training loop)
 │
 ├── notebooks/
-│   ├── 01_eda.py               # Exploratory Data Analysis
-│   ├── 02_baseline.py          # Iteration 1: ModelBaseline
-│   ├── 03_improved.py          # Iteration 2: ModelImproved
-│   └── 04_final.py             # Iteration 3: ModelFinal + comparison
+│   ├── 01_eda.ipynb              # Exploratory Data Analysis
+│   ├── 02_baseline.ipynb         # Iteration 1: ModelBaseline
+│   ├── 03_improved.ipynb         # Iteration 2: ModelImproved
+│   └── 04_final.ipynb            # Iteration 3: ModelFinal + comparison
 │
 ├── app/
 │   ├── app.py                  # Gradio web demo (upload X-ray → prediction)
@@ -133,10 +133,8 @@ pip install tensorboard
 
 ### 2. Explore the dataset
 
-```bash
-python notebooks/01_eda.py
+Open and run `notebooks/01_eda.ipynb` using Jupyter or your IDE.
 # Outputs charts to results/
-```
 
 ### 3. Train all models
 
@@ -192,4 +190,4 @@ After `trainer.py` completes, `results/` contains:
 
 ---
 
-## 👥 Team · ITCS352 Machine Learning · Mahidol University ICT · 2026
+## 👥 Contributors
